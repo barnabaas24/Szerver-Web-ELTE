@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
+use Illuminate\Contracts\Session\Session as SessionSession;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -21,7 +24,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create',[
+            'users'=> User::all()
+        ]);
     }
 
     /**
@@ -29,7 +34,18 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|min:3',
+            'content' => 'required|min:20',
+            'user_id'=> 'required|integer|exists:users,id'
+        ],[
+            'title.required' => 'Cím megadása kötelező.',
+            'title.min'=> 'Legalább :min karakter kell.'
+        ]);
+
+        $p = Post::create($validated);
+        Session::flash('post-created', $p->title);
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -37,7 +53,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show', ['post'=> $post]);
     }
 
     /**

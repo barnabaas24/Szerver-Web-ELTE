@@ -23,7 +23,10 @@ Route::get('/firstpage', function () {
     return view('first');
 });
 
-Route::get('/posts',[PostController::class, 'index'])->name('posts:index');
+Route::get('/posts',[PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/create', [PostController::class , 'create'])->name('posts.create');
+Route::get('/posts/{post}', [PostController::class,'show'])->name('posts.show'); //->where('post',);
+Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
